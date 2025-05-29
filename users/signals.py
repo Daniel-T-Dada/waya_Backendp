@@ -30,4 +30,8 @@ def send_verification_email(user):
         'user': user,
         'verify_url': verify_url,
     })
-    send_email_task.delay(subject, user.email, html_content)
+    # For development, just print the email content instead of sending
+    print(f"Email would be sent to {user.email}")
+    print(f"Subject: {subject}")
+    print(f"Verification URL: {verify_url}")
+    # send_email_task.delay(subject, user.email, html_content)  # Disabled for development

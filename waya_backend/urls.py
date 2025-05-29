@@ -3,7 +3,7 @@ from django.urls import path, include
 from django.shortcuts import redirect
 
 def redirect_root(request):  
-    return redirect('/users/')
+    return redirect('/users')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),

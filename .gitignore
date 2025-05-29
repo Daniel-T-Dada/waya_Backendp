@@ -1,8 +1,48 @@
+# Environment variables
 .env
-DEBUG=True
-ALLOWED_HOSTS=127.0.0.1,localhost
+.env.local
+.env.production
 
-#for production this should be
- 
- DEBUG=False
- ALLOWED_HOSTS=domain
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Django specific
+*.log
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files (optional - you might want to keep these)
+test_*.py
+update_docs.py
+
+# Documentation files (keeping these for deployment)
+API_DOCUMENTATION.md
+TRAILING_SLASH_COMPLETION_REPORT.md
+
+# Production settings notes
+# DEBUG=True
+# ALLOWED_HOSTS=127.0.0.1,localhost
+
+# For production this should be:
+# DEBUG=False
+# ALLOWED_HOSTS=your-domain.com

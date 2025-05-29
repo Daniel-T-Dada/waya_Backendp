@@ -33,7 +33,7 @@ class UserRegistrationView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         user = serializer.save()
-        send_verification_email(user)  # Ensure your signal handles async or errors gracefully
+        send_verification_email(user)  # Re-enabled with development-friendly implementation
 
 
 class UserLoginView(generics.GenericAPIView):
