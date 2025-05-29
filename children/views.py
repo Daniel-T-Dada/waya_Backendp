@@ -2,6 +2,7 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+from drf_spectacular.utils import extend_schema, OpenApiExample
 
 from .models import Child
 from .serializers import (
@@ -13,6 +14,37 @@ from .serializers import (
 from .permissions import IsParentOfChild
 
 
+@extend_schema(
+    tags=['Children'],
+    summary='Create a new child profile',
+    description='Create a child profile for the authenticated parent user.',
+    examples=[
+        OpenApiExample(
+            'Create Child Example',
+            value={
+                'username': 'johnny123',
+                'pin': '1234',
+                'avatar': None
+            }
+        )
+    ],
+    responses={
+        201: {
+            'description': 'Child created successfully',
+            'content': {
+                'application/json': {
+                    'example': {
+                        'id': '456e7890-e89b-12d3-a456-426614174001',
+                        'parent': '123e4567-e89b-12d3-a456-426614174000',
+                        'username': 'johnny123',
+                        'avatar': None,
+                        'created_at': '2025-05-29T10:30:00Z'
+                    }
+                }
+            }
+        }
+    }
+)
 class ChildCreateView(generics.CreateAPIView):
     serializer_class = ChildCreateSerializer
     permission_classes = [IsAuthenticated]

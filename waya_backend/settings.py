@@ -29,11 +29,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_celery_beat',
-
-    # Third-party apps
+    'django_celery_beat',    # Third-party apps
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_simplejwt.token_blacklist',  # JWT token blacklist support
     'dj_rest_auth',
     'dj_rest_auth.registration',
     'allauth',
@@ -42,6 +41,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
     'django_rest_passwordreset',
+    'drf_spectacular',
 
     # Local apps
     'users.apps.UsersConfig',
@@ -187,6 +187,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 SIMPLE_JWT = {
@@ -195,6 +196,65 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
     'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+# drf-spectacular settings for OpenAPI/Swagger documentation
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Waya Backend API',
+    'DESCRIPTION': 'API documentation for Waya Backend - A comprehensive family management and task tracking system',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SCHEMA_PATH_PREFIX': r'/api/',
+    'SCHEMA_PATH_PREFIX_TRIM': True,
+    'TAGS': [
+        {'name': 'Authentication', 'description': 'User authentication and registration endpoints'},
+        {'name': 'Users', 'description': 'User management operations'},
+        {'name': 'Children', 'description': 'Child profile management'},
+        {'name': 'Tasks', 'description': 'Task management and tracking'},
+        {'name': 'Family Wallet', 'description': 'Family financial management'},
+        {'name': 'Insights', 'description': 'Analytics and insights tracking'},
+        {'name': 'Settings', 'description': 'Application settings management'},
+    ],
+    'AUTHENTICATION_WHITELIST': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,
+        'persistAuthorization': True,
+        'displayOperationId': False,
+        'defaultModelsExpandDepth': 1,
+        'defaultModelExpandDepth': 1,
+        'defaultModelRendering': 'example',
+        'displayRequestDuration': True,
+        'docExpansion': 'none',
+        'filter': True,
+        'showExtensions': True,
+        'showCommonExtensions': True,
+    },
+    'REDOC_UI_SETTINGS': {
+        'hideDownloadButton': False,
+        'hideHostname': False,
+        'hideLoading': False,
+        'hideSchemaPattern': True,
+        'expandResponses': '200,201',
+        'pathInMiddlePanel': True,
+        'nativeScrollbars': False,
+        'theme': {
+            'colors': {
+                'primary': {
+                    'main': '#3f51b5'
+                }
+            },
+            'typography': {
+                'fontSize': '14px',
+                'lineHeight': '1.5em',
+                'code': {
+                    'fontSize': '13px'
+                }
+            }
+        }
+    }
 }
 
 # CORS settings

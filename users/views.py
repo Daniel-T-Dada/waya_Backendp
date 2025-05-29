@@ -21,12 +21,58 @@ from django.http import JsonResponse
 from .signals import send_verification_email
 from django.contrib.auth import get_user_model
 from django.conf import settings
+from drf_spectacular.utils import extend_schema, OpenApiExample
+from drf_spectacular.openapi import OpenApiParameter
 
 from rest_framework.views import APIView
 
 User = get_user_model()
 
 
+@extend_schema(
+    tags=['Authentication'],
+    summary='Register a new user',
+    description='Create a new user account with email verification.',
+    examples=[
+        OpenApiExample(
+            'Registration Example',
+            value={
+                'email': 'user@example.com',
+                'full_name': 'John Doe',
+                'password': 'SecurePassword123',
+                'password2': 'SecurePassword123',
+                'role': 'parent',
+                'terms_accepted': True
+            }
+        )
+    ],
+    responses={
+        201: {
+            'description': 'User created successfully',
+            'content': {
+                'application/json': {
+                    'example': {
+                        'id': '123e4567-e89b-12d3-a456-426614174000',
+                        'email': 'user@example.com',
+                        'full_name': 'John Doe',
+                        'role': 'parent'
+                    }
+                }
+            }
+        },
+        400: {
+            'description': 'Validation errors',
+            'content': {
+                'application/json': {
+                    'example': {
+                        'email': ['A user with this email already exists.'],
+                        'password': ['This password is too common.']
+                    }
+                }
+            }
+        }
+    }
+)
 class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
     permission_classes = [AllowAny]
@@ -36,6 +82,47 @@ class UserRegistrationView(generics.CreateAPIView):
         send_verification_email(user)  # Re-enabled with development-friendly implementation
 
 
+@extend_schema(
+    tags=['Authentication'],
+    summary='User login',
+    description='Authenticate user with email and password to get JWT tokens.',
+    examples=[
+        OpenApiExample(
+            'Login Example',
+            value={
+                'email': 'user@example.com',
+                'password': 'SecurePassword123'
+            }
+        )
+    ],
+    responses={
+        200: {
+            'description': 'Login successful',
+            'content': {
+                'application/json': {
+                    'example': {
+                        'id': '123e4567-e89b-12d3-a456-426614174000',
+                        'name': 'John Doe',
+                        'email': 'user@example.com',
+                        'avatar': None,
+                        'token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...',
+                        'refresh': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...'
+                    }
+                }
+            }
+        },
+        401: {
+            'description': 'Invalid credentials',
+            'content': {
+                'application/json': {
+                    'example': {
+                        'detail': 'Invalid credentials'
+                    }
+                }
+            }
+        }
+    }
+)
 class UserLoginView(generics.GenericAPIView):
     serializer_class = UserLoginSerializer
     permission_classes = [AllowAny]
